@@ -1,7 +1,8 @@
 import requests
+import os
 
-# Test NEW YouTube API key directly
-api_key = 'AIzaSyDQBUIiNvRVoKEjK4RiDQbWFPyN5yxM_-Y'
+# Test YouTube API key directly - Use environment variable in production
+api_key = os.getenv('YOUTUBE_API_KEY', 'YOUR_API_KEY_HERE')
 url = f'https://www.googleapis.com/youtube/v3/search?part=snippet&q=business+podcast&type=channel&maxResults=5&key={api_key}'
 
 try:
