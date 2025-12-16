@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Frontend Connection Test</title>
+</head>
+<body>
+    <h1>Frontend Connection Test</h1>
+    <button onclick="testAPI()">Test API Call</button>
+    <div id="results"></div>
+
+    <script>
+        async function testAPI() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = 'Testing...';
+            
+            try {
+                console.log('Making API call to: http://localhost:8000/api/search');
+                
+                const response = await fetch('http://localhost:8000/api/search', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        keywords: ['business podcast'],
+                        regions: ['US'],
+                        min_subscribers: 10000,
+                        max_subscribers: 1000000,
+                        max_days_since_upload: 30
+                    }),
+                });
+
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Error response:', errorText);
+                    resultsDiv.innerHTML = `Error: ${response.status} - ${errorText}`;
+                    return;
+                }
+
+                const data = await response.json();
+                console.log('API Response:', data);
+                resultsDiv.innerHTML = `
+                    <h2>Success!</h2>
+                    <p>Status: ${response.status}</p>
+                    <p>Channels found: ${data.total_results}</p>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                console.error('Error:', error);
+                resultsDiv.innerHTML = `Error: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>
